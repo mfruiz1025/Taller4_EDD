@@ -8,6 +8,9 @@
 #include <queue>
 #include <algorithm>
 #include <utility>
+#include <tuple>
+#include <limits>
+#include <set>
 
 template <typename T>
 class Grafo {
@@ -38,8 +41,9 @@ public:
 
     std::vector<T> DFS(T ver_inicial);  // Depth-First Search
     std::vector<T> BFS(T ver_inicial);  // Breadth-First Search
-    std::vector<std::pair<T, T>>algoritmoPrim(T x); 
-    int algoritmoDijkstra(const T begin, const T end); 
+
+    std::vector<std::pair<T, T>>algoritmoPrim(T x);   // Algoritmo de Prim
+    std::map<T, int> dijkstra(T origen);  // Dijkstra's algorithm
 };
 
 #include "Grafo.hxx"  // Include the implementation

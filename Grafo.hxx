@@ -1,7 +1,13 @@
 #ifndef GRAFO_HXX
 #define GRAFO_HXX
 
+#include <iostream>
 #include "Grafo.h"
+#include <limits>
+#include <queue>
+#include <set>
+#include <vector>
+#include <map>
 
 // Constructor
 template <typename T>
@@ -255,68 +261,42 @@ std::vector<std::pair<T, T>> Grafo<T>::algoritmoPrim(T x) {
     return Enew;
 }
 
+
 // Explicita la instanciación para los tipos que usarás
 template class Grafo<int>;  
 
 template <typename T>
-int Grafo<T>::algoritmoDijkstra(const T begin, const T end) {
-    // Inicialización de la cola de prioridad y las distancias
-    std::priority_queue<std::pair<int, T>, std::vector<std::pair<int, T>>, std::greater<std::pair<int, T>>> pq;
-    std::map<T, int> Dist;  // Mapa para las distancias de cada vértice
-    std::map<T, bool> mark; // Mapa para los vértices visitados
+std::map<T, int> Grafo<T>::dijkstra(T origen) {
+    std::map<T, int> distancias;  // Distancia mínima desde el origen a cada vértice
+    std::set<std::pair<int, T>> cola;  // Min-heap de vértices a procesar (distancia, vértice)
 
-    // Inicializamos las distancias a infinito y el vértice de inicio con 0
-    for (size_t i = 0; i < vertices.size(); ++i) {
-        Dist[vertices[i]] = std::numeric_limits<int>::max();
-        mark[vertices[i]] = false;
+    // Inicialización: distancias infinitas y el origen con distancia 0
+    for (const auto& vertice : vertices) {
+        distancias[vertice] = std::numeric_limits<int>::max();
     }
+    distancias[origen] = 0;
+    cola.insert({0, origen});
 
-    Dist[begin] = 0;
-    pq.push(std::make_pair(0, begin));  // Empezamos con el vértice de inicio
+    while (!cola.empty()) {
+        // Extraemos el vértice con la menor distancia
+        auto [dist_actual, u] = *cola.begin();
+        cola.erase(cola.begin());
 
-    while (!pq.empty()) {
-        // Extraemos el vértice con el menor costo
-        std::pair<int, T> front = pq.top();
-        pq.pop();
+        // Procesamos cada vecino de u
+        for (const auto& vecino : vecinosVertice(u)) {
+            int peso_arista = buscarArista(u, vecino);
+            int nueva_dist = dist_actual + peso_arista;
 
-        int cost = front.first;
-        T node = front.second;
-
-        // Si ya hemos procesado este nodo, lo ignoramos
-        if (mark[node]) continue;
-
-        // Marcamos el nodo como procesado
-        mark[node] = true;
-
-        // Si hemos llegado al nodo destino, retornamos el costo
-        if (node == end) {
-            return cost;
-        }
-
-        // Iteramos sobre las aristas del nodo actual
-        typename std::map<std::pair<T, T>, int>::iterator it;
-        for (it = aristas.begin(); it != aristas.end(); ++it) {
-            T u = it->first.first;  // Primer vértice de la arista
-            T v = it->first.second; // Segundo vértice de la arista
-            int peso = it->second;  // Peso de la arista
-
-            // Verificamos si la arista conecta el nodo actual con otro vértice
-            if (u == node && !mark[v]) {
-                // Relajamos la distancia si encontramos un camino más corto
-                if (cost + peso < Dist[v]) {
-                    Dist[v] = cost + peso;
-                    pq.push(std::make_pair(Dist[v], v));
-                }
-            } else if (v == node && !mark[u]) {
-                // Relajamos la distancia si encontramos un camino más corto
-                if (cost + peso < Dist[u]) {
-                    Dist[u] = cost + peso;
-                    pq.push(std::make_pair(Dist[u], u));
-                }
+            // Si encontramos una distancia menor, actualizamos
+            if (nueva_dist < distancias[vecino]) {
+                // Actualizamos la cola y las distancias
+                cola.erase({distancias[vecino], vecino});
+                distancias[vecino] = nueva_dist;
+                cola.insert({nueva_dist, vecino});
             }
         }
     }
 
-    return -1;  // Si no se puede llegar al nodo de destino, retornamos -1
+    return distancias;  // Distancias mínimas desde el origen a cada vértice
 }
 #endif // GRAFO_HXX

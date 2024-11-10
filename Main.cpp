@@ -2,10 +2,9 @@
 #include "Grafo.hxx"
 
 int main() {
-    // Crear un grafo de enteros
     Grafo<int> grafo;
 
-    // Insertar vértices
+    // Agregar vértices
     grafo.insertarVertice(1);
     grafo.insertarVertice(2);
     grafo.insertarVertice(3);
@@ -15,8 +14,26 @@ int main() {
     grafo.insertarArista(1, 2, 5);
     grafo.insertarArista(2, 3, 3);
     grafo.insertarArista(3, 4, 2);
+    
 
-    // Mostrar vértices
+    //prim
+    std::cout << "Ejecutando el algoritmo de Prim desde el vertice 1..." << std::endl;
+    std::vector<std::pair<int, int>> aristasPrim = grafo.algoritmoPrim(1);
+
+    std::cout << "Aristas seleccionadas por el algoritmo de Prim:" << std::endl;
+    for (size_t i = 0; i < aristasPrim.size(); ++i) {
+        std::cout << "Arista desde " << aristasPrim[i].first << " a " << aristasPrim[i].second << std::endl;
+    }
+
+    // Ejecutar Dijkstra desde el vértice 1
+    auto distancias = grafo.dijkstra(1);
+
+    // Mostrar las distancias mínimas desde el vértice 1
+    std::cout << "Distancias minimas desde el vertice 1:\n";
+    for (const auto& [vertice, distancia] : distancias) {
+        std::cout << "Vertice " << vertice << ": " << distancia << '\n';
+    }
+// Mostrar vértices
     std::cout << "Vertices en el grafo: ";
     std::vector<int> vertices = grafo.obtenerVertices();
     for (size_t i = 0; i < vertices.size(); ++i) {
@@ -71,21 +88,5 @@ int main() {
         std::cout << recorridoBFS[i] << " ";
     }
     std::cout << std::endl;
-
-    std::cout << "Ejecutando el algoritmo de Prim desde el vertice 1..." << std::endl;
-    std::vector<std::pair<int, int>> aristasPrim = grafo.algoritmoPrim(1);
-
-    std::cout << "Aristas seleccionadas por el algoritmo de Prim:" << std::endl;
-    for (size_t i = 0; i < aristasPrim.size(); ++i) {
-        std::cout << "Arista desde " << aristasPrim[i].first << " a " << aristasPrim[i].second << std::endl;
-    }
-
-    // Ejecutar el algoritmo de Dijkstra
-    int distancia = grafo.algoritmoDijkstra(1, 4);
-    if (distancia != -1) {
-        std::cout << "La distancia mas corta de 1 a 4 es: " << distancia << std::endl;
-    } else {
-        std::cout << "No se puede llegar de 1 a 4." << std::endl;
-    }
     return 0;
 }
