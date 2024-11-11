@@ -21,7 +21,7 @@ struct Punto
   bool operator==(const Punto& other) const {
     return (X == other.X && Y == other.Y);
   }
-
+  //Se usa para el tipo de retorno de algunas variables ya que usamos el Map 
   bool operator<(const Punto& other) const {
         if (X != other.X) return X < other.X;
         return Y < other.Y;
