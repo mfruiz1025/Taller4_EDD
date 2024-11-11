@@ -31,6 +31,15 @@ const std::vector<T>& Grafo<T>::obtenerVertices() const {
     return this->vertices;
 }
 
+// Obtener un vértice por su índice
+template <typename T>
+T Grafo<T>::obtenerVertice(int indice) const {
+    if (indice >= 0 && indice < vertices.size()) {
+        return vertices[indice];
+    }
+}
+
+
 // Get edges
 template <typename T>
 std::map<std::pair<T, T>, int> Grafo<T>::obtenerAristas() const {
@@ -217,24 +226,21 @@ std::vector<T> Grafo<T>::BFS(T ver_inicial) {
 // Prim's Algorithm (MST)
 template <typename T>
 std::vector<std::pair<T, T>> Grafo<T>::algoritmoPrim(T x) {
-    std::vector<T> Vnew;  // Conjunto de vértices seleccionados
-    std::vector<std::pair<T, T>> Enew;  // Conjunto de aristas seleccionadas
+    std::vector<T> Vnew;
+    std::vector<std::pair<T, T>> Enew;
     Vnew.push_back(x);
 
-    // Mientras no todos los vértices hayan sido añadidos a Vnew
     while (Vnew.size() < cantVertices()) {
         T u;
         T v;
-        int pesoMinimo = std::numeric_limits<int>::max();  // Peso mínimo de la arista
+        int pesoMinimo = std::numeric_limits<int>::max();
 
-        // Buscar la arista con peso mínimo, donde uno de los vértices está en Vnew y el otro no
         typename std::map<std::pair<T, T>, int>::iterator it;
         for (it = aristas.begin(); it != aristas.end(); ++it) {
             T vertice1 = it->first.first;
             T vertice2 = it->first.second;
             int peso = it->second;
 
-            // Si uno de los vértices está en Vnew y el otro no
             if (std::find(Vnew.begin(), Vnew.end(), vertice1) != Vnew.end() &&
                 std::find(Vnew.begin(), Vnew.end(), vertice2) == Vnew.end()) {
                 if (peso < pesoMinimo) {
@@ -253,7 +259,6 @@ std::vector<std::pair<T, T>> Grafo<T>::algoritmoPrim(T x) {
             }
         }
 
-        // Añadir el vértice v a Vnew y la arista (u, v) a Enew
         Vnew.push_back(v);
         Enew.push_back(std::make_pair(u, v));
     }
@@ -261,42 +266,40 @@ std::vector<std::pair<T, T>> Grafo<T>::algoritmoPrim(T x) {
     return Enew;
 }
 
-
 // Explicita la instanciación para los tipos que usarás
-template class Grafo<int>;  
+template class Grafo<int>;
 
+// Dijkstra Algorithm
 template <typename T>
 std::map<T, int> Grafo<T>::dijkstra(T origen) {
-    std::map<T, int> distancias;  // Distancia mínima desde el origen a cada vértice
-    std::set<std::pair<int, T>> cola;  // Min-heap de vértices a procesar (distancia, vértice)
+    std::map<T, int> distancias;
+    std::set<std::pair<int, T>> cola;
 
-    // Inicialización: distancias infinitas y el origen con distancia 0
-    for (const auto& vertice : vertices) {
-        distancias[vertice] = std::numeric_limits<int>::max();
+    typename std::vector<T>::const_iterator vertice;
+    for (vertice = vertices.begin(); vertice != vertices.end(); ++vertice) {
+        distancias[*vertice] = std::numeric_limits<int>::max();
     }
     distancias[origen] = 0;
-    cola.insert({0, origen});
+    cola.insert(std::make_pair(0, origen));
 
     while (!cola.empty()) {
-        // Extraemos el vértice con la menor distancia
-        auto [dist_actual, u] = *cola.begin();
+        T u = cola.begin()->second;
         cola.erase(cola.begin());
 
-        // Procesamos cada vecino de u
-        for (const auto& vecino : vecinosVertice(u)) {
-            int peso_arista = buscarArista(u, vecino);
-            int nueva_dist = dist_actual + peso_arista;
+        std::vector<T> vecinos = vecinosVertice(u);
+        for (size_t i = 0; i < vecinos.size(); ++i) {
+            T v = vecinos[i];
+            int peso = buscarArista(u, v);
 
-            // Si encontramos una distancia menor, actualizamos
-            if (nueva_dist < distancias[vecino]) {
-                // Actualizamos la cola y las distancias
-                cola.erase({distancias[vecino], vecino});
-                distancias[vecino] = nueva_dist;
-                cola.insert({nueva_dist, vecino});
+            if (distancias[u] + peso < distancias[v]) {
+                cola.erase(std::make_pair(distancias[v], v));
+                distancias[v] = distancias[u] + peso;
+                cola.insert(std::make_pair(distancias[v], v));
             }
         }
     }
 
-    return distancias;  // Distancias mínimas desde el origen a cada vértice
+    return distancias;
 }
-#endif // GRAFO_HXX
+
+#endif

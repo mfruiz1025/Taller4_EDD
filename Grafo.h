@@ -25,7 +25,7 @@ public:
     void fijarAristas(const std::map<std::pair<T, T>, int>& aristas);  // Set edges
     const std::vector<T>& obtenerVertices() const;  // Get vertices
     std::map<std::pair<T, T>, int> obtenerAristas() const;  // Get edges
-
+    T obtenerVertice(int indice) const; 
     int cantVertices() const;  // Get the number of vertices
     int cantAristas() const;  // Get the number of edges
     int buscarVertice(T ver) const;  // Search for a vertex
