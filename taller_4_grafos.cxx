@@ -102,9 +102,9 @@ int main(int argc, char* argv[]) {
   }
 
   //TODO # 6: Encontrar las rutas de costo minimo usando los algoritmos requeridos
-  //Aixulio no funciona bien 
-  /*TCaminos caminosPrim = g.algoritmoPrim(g.obtenerVertice(0));
-  TCaminos caminosDijkstra = g.dijkstra(g.obtenerVertice(0));*/
+  //No se usa el TCamino como hacemos para usar eso. Verificar si esta calculando bien los algoritmos 
+  std::vector<std::pair<Punto, Punto>> caminosPrim = g.algoritmoPrim(g.obtenerVertice(0)); 
+  std::map<Punto, int> caminosDijkstra = g.dijkstra(g.obtenerVertice(0));
 
   /* TODO # 7: Imprimir el informe de Prim
   TRuta ruta;
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
   for ( unsigned int j = 1; j < g.NumeroVertices( ); ++j )
   {
     std::cout << "Casa " << j << ":" 
-              << g.ObtenerVertice( j ).X << "," << g.ObtenerVertice( j ).Y << std::endl;
+              << g.obtenerVertice( j ).X << "," << g.obtenerVertice( j ).Y << std::endl;
     std::cout << "Distancia lineal a porteria: " << distLineales[ j-1 ] << std::endl;
 
     std::cout << "Camino segun algoritmo de Prim: ";
@@ -123,7 +123,7 @@ int main(int argc, char* argv[]) {
     std::cout << "Distancia total recorrida con algoritmo de Prim: ";
     cosTotal = 0.0;
     for( unsigned int i = 0; i < ruta.size( ) - 1; ++i )
-      cosTotal += g.ObtenerCosto( ruta[ i ], ruta[ i + 1 ] );
+      cosTotal += g.obtenerCosto( ruta[ i ], ruta[ i + 1 ] );
     std::cout << cosTotal << std::endl;
 
     std::cout << "Comparacion de Prim con Dijkstra: ";

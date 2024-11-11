@@ -15,8 +15,7 @@ int main() {
     grafo.insertarArista(2, 3, 3);
     grafo.insertarArista(3, 4, 2);
     
-
-    //prim
+    // Prim
     std::cout << "Ejecutando el algoritmo de Prim desde el vertice 1..." << std::endl;
     std::vector<std::pair<int, int>> aristasPrim = grafo.algoritmoPrim(1);
 
@@ -26,14 +25,15 @@ int main() {
     }
 
     // Ejecutar Dijkstra desde el vértice 1
-    auto distancias = grafo.dijkstra(1);
+    std::map<int, int> distancias = grafo.dijkstra(1);
 
     // Mostrar las distancias mínimas desde el vértice 1
     std::cout << "Distancias minimas desde el vertice 1:\n";
-    for (const auto& [vertice, distancia] : distancias) {
-        std::cout << "Vertice " << vertice << ": " << distancia << '\n';
+    for (std::map<int, int>::iterator it = distancias.begin(); it != distancias.end(); ++it) {
+        std::cout << "Vertice " << it->first << ": " << it->second << '\n';
     }
-// Mostrar vértices
+
+    // Mostrar vértices
     std::cout << "Vertices en el grafo: ";
     std::vector<int> vertices = grafo.obtenerVertices();
     for (size_t i = 0; i < vertices.size(); ++i) {
@@ -88,5 +88,6 @@ int main() {
         std::cout << recorridoBFS[i] << " ";
     }
     std::cout << std::endl;
+
     return 0;
 }
